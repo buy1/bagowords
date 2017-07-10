@@ -32,6 +32,6 @@ def getAverageFeatures(reviews, model, num_features):
 
 
 # model=Word2Vec.load('300features_40minwords_10context.bin')
-model=models.KeyedVectors.load_word2vec_format('300features_40minwords_10context.bin')
+model=models.KeyedVectors.load_word2vec_format("glove_word2vec.bin")
 
 print (model['car'])
