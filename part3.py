@@ -9,6 +9,19 @@ import nltk.data
 import logging
 import re
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.cluster import KMeans
+import time
+def create_bag_of_centroids( wordlist, word_centroid_map ):
+
+    num_centroids = max( word_centroid_map.values() ) + 1    #
+    bag_of_centroids = np.zeros( num_centroids, dtype="float32" )
+
+    for word in wordlist:
+        if word in word_centroid_map:
+            index = word_centroid_map[word]
+            bag_of_centroids[index] += 1
+
+    return bag_of_centroids
 #Takes in a raw_String and removes html elements and non alphabetical characters
 #returns a list of words
 def review_to_wordlist(review, remove_stopwords=False):
@@ -82,12 +95,50 @@ for review in test["review"]:
 	clean_test_reviews.append(review_to_wordlist(review,remove_stopwords=True))
 testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
 
-forest = RandomForestClassifier(n_estimators=100)
+# forest = RandomForestClassifier(n_estimators=100)
 
-print ("fitting a random forest to labeled training data...")
-forest = forest.fit(trainDataVecs,train["sentiment"])
+# print ("fitting a random forest to labeled training data...")
+# forest = forest.fit(trainDataVecs,train["sentiment"])
 
-result=forest.predict(testDataVecs)
+# result=forest.predict(testDataVecs)
 
-output=pd.DataFrame(data={"id":test["id"],"sentiment":result})
-output.to_csv("Word2Vec_AverageVectors.csv",index=False, quoting=3)
+# output=pd.DataFrame(data={"id":test["id"],"sentiment":result})
+# output.to_csv("Word2Vec_AverageVectors.csv",index=False, quoting=3)
+
+start = time.time() # Start time
+
+#syn0: a numpy array that stores a word with all its features in each row
+word_vectors = model.syn0
+#sets the number of clusters to be 1/5th the size of words
+# aka 5 words per cluster instead of just shape[0] which would be 5 words per cluster
+num_clusters = word_vectors.shape[0] / 5
+
+#initialize the the trainer object
+kmeans_clustering = KMeans( n_clusters = num_clusters )
+# fits the model to the data
+idx = kmeans_clustering.fit_predict( word_vectors )
+
+# Get the end time and print how long the process took
+end = time.time()
+
+elapsed = end - start
+print "Time taken for K Means clustering: ", elapsed, "seconds."
+num_clusters=word_vectors.shape[0]/5
+
+# Create a Word / Index dictionary, mapping each vocabulary word to
+# a cluster number                                                              
+word_centroid_map = dict(zip( model.index2word, idx ))
+
+# For the first 10 clusters
+for cluster in xrange(0,10):
+    #
+    # Print the cluster number  
+    print "\nCluster %d" % cluster
+    #
+    # Find all of the words for that cluster number, and print them out
+    words = []
+    for i in xrange(0,len(word_centroid_map.values())):
+        if( word_centroid_map.values()[i] == cluster ):
+            words.append(word_centroid_map.keys()[i])
+    print words
+
