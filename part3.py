@@ -2,7 +2,7 @@
 # from gensim import models
 import gensim
 import numpy as np
-
+import os
 
 
 #All the data has variable length so we try averaging the vectors for each review
@@ -27,7 +27,7 @@ def makeFeatureVec(words, model, num_features):
 	featureVec=np.divide(featureVec,nwords)
 	return featureVec
 
-def getAverageFeatures(reviews, model, num_features):
+def getAvgFeatureVecs(reviews, model, num_features):
 	reviewFeatureVecs=np.zeros((len(reviews),num_features),dtype="float32")
 
 	counter=0
@@ -39,6 +39,26 @@ def getAverageFeatures(reviews, model, num_features):
 	return reviewFeatureVecs
 
 # model=Word2Vec.load('300features_40minwords_10context.bin')
-model=models.KeyedVectors.load_word2vec_format("glove_word2vec.bin")
+labeledpath=os.getcwd()+"data/labeledTrainData.tsv"
+testpath=os.getcwd()+"data/testData.tsv"
+# unlabeled_path=os.getcwd()+"data/unlabeledTrainData.tsv"
 
-print (model['car'])
+traindata=pd.read_csv(labeledpath, header=0,delimiter="\t", quoting=3)
+testdata=pd.read_csv(testpath,header=0,delimiter="\t",quoting=3)
+# unlabeled_traindata=pd.read_csv(unlabeled_path,header=0,delimiter="\t", quoting=3)
+model=models.KeyedVectors.load_word2vec_format("glove_word2vec.bin")
+num_features=300
+
+print "Creating average feature vecs for train reviews"
+clean_train_reviews=[]
+for review in traindata["review"]:
+	clean_train_reviews.append(review_to_wordlist(review,remove_stopwords=True))
+trainDataVecs= getAvgFeatureVecs(clean_train_reviews,model, num_features)
+
+print "Creating average feature vecs for test reviews"
+clean_test_reviews=[]
+for review in testdata["review"]:
+	clean_test_reviews.append(review_to_worldlist(review,remove_stopwords=True))
+testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
+
+
