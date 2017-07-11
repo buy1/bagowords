@@ -71,38 +71,38 @@ def getAvgFeatureVecs(reviews, model, num_features):
 		reviewFeatureVecs[counter]= makeFeatureVec(review,model,num_features,index2word_set)
 		counter+=1
 	return reviewFeatureVecs
+#===============
+# # model=Word2Vec.load('300features_40minwords_10context.bin')
+# labeledpath=os.getcwd()+"/data/labeledTrainData.tsv"
+# testpath=os.getcwd()+"/data/testData.tsv"
+# # unlabeled_path=os.getcwd()+"data/unlabeledTrainData.tsv"
 
-# model=Word2Vec.load('300features_40minwords_10context.bin')
-labeledpath=os.getcwd()+"/data/labeledTrainData.tsv"
-testpath=os.getcwd()+"/data/testData.tsv"
-# unlabeled_path=os.getcwd()+"data/unlabeledTrainData.tsv"
+# train=pd.read_csv(labeledpath, header=0,delimiter="\t", quoting=3)
+# test=pd.read_csv(testpath,header=0,delimiter="\t",quoting=3)
+# # unlabeled_traindata=pd.read_csv(unlabeled_path,header=0,delimiter="\t", quoting=3)
+# #open('u.item', encoding = "ISO-8859-1")
+# model=models.KeyedVectors.load_word2vec_format("/mnt/home/huangbaiwen/model/glove-word2vec.bin",binary=True)
+# num_features=300
 
-train=pd.read_csv(labeledpath, header=0,delimiter="\t", quoting=3)
-test=pd.read_csv(testpath,header=0,delimiter="\t",quoting=3)
-# unlabeled_traindata=pd.read_csv(unlabeled_path,header=0,delimiter="\t", quoting=3)
-#open('u.item', encoding = "ISO-8859-1")
-model=models.KeyedVectors.load_word2vec_format("/mnt/home/huangbaiwen/model/glove-word2vec.bin",binary=True)
-num_features=300
+# print ("Creating average feature vecs for train reviews")
+# clean_train_reviews=[]
+# for review in train["review"]:
+# 	clean_train_reviews.append(review_to_wordlist(review,remove_stopwords=True))
+# trainDataVecs= getAvgFeatureVecs(clean_train_reviews,model, num_features)
 
-print ("Creating average feature vecs for train reviews")
-clean_train_reviews=[]
-for review in train["review"]:
-	clean_train_reviews.append(review_to_wordlist(review,remove_stopwords=True))
-trainDataVecs= getAvgFeatureVecs(clean_train_reviews,model, num_features)
+# print ("Creating average feature vecs for test reviews")
+# clean_test_reviews=[]
+# for review in test["review"]:
+# 	clean_test_reviews.append(review_to_wordlist(review,remove_stopwords=True))
+# testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
+#===================================
+# print (testDataVecs.shape)
+# f=h5py.File("test.hdf5","w")
 
-print ("Creating average feature vecs for test reviews")
-clean_test_reviews=[]
-for review in test["review"]:
-	clean_test_reviews.append(review_to_wordlist(review,remove_stopwords=True))
-testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
+# dset=f.create_dataset("data",data=testDataVecs)
 
-print (testDataVecs.shape)
-f=h5py.File("test.hdf5","w")
-
-dset=f.create_dataset("data",data=testDataVecs)
-
-f.close()
-
+# f.close()
+#==================================
 # # forest = RandomForestClassifier(n_estimators=100)
 
 # # print ("fitting a random forest to labeled training data...")
@@ -112,23 +112,25 @@ f.close()
 
 # # output=pd.DataFrame(data={"id":test["id"],"sentiment":result})
 # # output.to_csv("Word2Vec_AverageVectors.csv",index=False, quoting=3)
+#================================
+h5f=h5py.file('test.hdf5','r')
+testDataVecs=h5f['data'][:]
+start = time.time() # Start time
 
-# start = time.time() # Start time
+#syn0: a numpy array that stores a word with all its features in each row
+word_vectors = model.syn0
+#sets the number of clusters to be 1/5th the size of words
+# aka 5 words per cluster instead of just shape[0] which would be 5 words per cluster
+num_clusters = word_vectors.shape[0] / 5
+print (num_clusters)
+#initialize the the trainer object
+kmeans_clustering = KMeans( n_clusters = num_clusters )
+# fits the model to the data
+idx = kmeans_clustering.fit_predict(word_vectors)
 
-# #syn0: a numpy array that stores a word with all its features in each row
-# word_vectors = model.syn0
-# #sets the number of clusters to be 1/5th the size of words
-# # aka 5 words per cluster instead of just shape[0] which would be 5 words per cluster
-# num_clusters = word_vectors.shape[0] / 5
-# print (num_clusters)
-# #initialize the the trainer object
-# kmeans_clustering = KMeans( n_clusters = num_clusters )
-# # fits the model to the data
-# idx = kmeans_clustering.fit_predict(word_vectors)
-
-# # Get the end time and print how long the process took
-# end = time.time()
-
+# Get the end time and print how long the process took
+end = time.time()
+#+====================================
 # elapsed = end - start
 # print ("Time taken for K Means clustering: ", elapsed, "seconds.")
 # num_clusters=word_vectors.shape[0]/5
