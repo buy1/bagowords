@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 import nltk.data
 import logging
 import re
+from sklearn.ensemble import RandomForestClassifier
 #Takes in a raw_String and removes html elements and non alphabetical characters
 #returns a list of words
 def review_to_wordlist(review, remove_stopwords=False):
@@ -81,4 +82,12 @@ for review in testdata["review"]:
 	clean_test_reviews.append(review_to_wordlist(review,remove_stopwords=True))
 testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
 
+forest = RandomForestClassifier(n_estimators=100)
 
+print ("fitting a random forest to labeled training data...")
+forest = forest.fit(trainDataVecs,train["sentiment"])
+
+resut=forest.predict(testDataVecs)
+
+output=pd.DataFrame(data={"id":test["id"],"sentiment":result})
+output.to_csv("Word2Vec_AverageVectors.csv",index=False, quoting=3)
