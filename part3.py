@@ -111,7 +111,7 @@ start = time.time() # Start time
 word_vectors = model.syn0
 #sets the number of clusters to be 1/5th the size of words
 # aka 5 words per cluster instead of just shape[0] which would be 5 words per cluster
-num_clusters = word_vectors.shape[0] / 5
+num_clusters = word_vectors.shape[0] // 5
 
 #initialize the the trainer object
 kmeans_clustering = KMeans( n_clusters = num_clusters )
