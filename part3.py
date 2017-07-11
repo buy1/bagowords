@@ -122,7 +122,7 @@ idx = kmeans_clustering.fit_predict( word_vectors )
 end = time.time()
 
 elapsed = end - start
-print "Time taken for K Means clustering: ", elapsed, "seconds."
+print ("Time taken for K Means clustering: ", elapsed, "seconds.")
 num_clusters=word_vectors.shape[0]/5
 
 # Create a Word / Index dictionary, mapping each vocabulary word to
@@ -133,12 +133,12 @@ word_centroid_map = dict(zip( model.index2word, idx ))
 for cluster in xrange(0,10):
     #
     # Print the cluster number  
-    print "\nCluster %d" % cluster
+    print ("\nCluster %d" % cluster)
     #
     # Find all of the words for that cluster number, and print them out
     words = []
     for i in xrange(0,len(word_centroid_map.values())):
         if( word_centroid_map.values()[i] == cluster ):
             words.append(word_centroid_map.keys()[i])
-    print words
+    print (words)
 
