@@ -27,16 +27,13 @@ def review_to_wordlist(review, remove_stopwords=False):
 
 #All the data has variable length so we try averaging the vectors for each review
 #word is the review
-def makeFeatureVec(words, model, num_features):
+def makeFeatureVec(words, model, num_features,index2word_set):
 	#pre-initialize for speed
 	featureVec=np.zeros((num_features),dtype="float32")
 
-	#converts the model to a list of words in the model's vocab
-	index2word_set=set(model.index2word)
-
 	# checks if the words in the review are in the model's vocab
 	# and adds its feature vector to the total
-	n_words=0
+	nwords=0
 	for word in words:
 		if word in index2word_set:
 			featureVec=np.add(featureVec,model[word])
@@ -51,12 +48,13 @@ def makeFeatureVec(words, model, num_features):
 def getAvgFeatureVecs(reviews, model, num_features):
 	reviewFeatureVecs=np.zeros((len(reviews),num_features),dtype="float32")
 
-	counter=0
+	counter=0	
+	index2word_set=set(model.index2word)
 	for review in reviews:
 		if counter%1000:
 			print ("On review : " + str(counter))
-		reviewFeatureVecs[counter]= makeFeaturevec(revew,model,num_features)
-		counter=counter+1
+		reviewFeatureVecs[counter]= makeFeatureVec(review,model,num_features,index2word_set)
+		counter+=1
 	return reviewFeatureVecs
 
 # model=Word2Vec.load('300features_40minwords_10context.bin')
@@ -80,7 +78,7 @@ trainDataVecs= getAvgFeatureVecs(clean_train_reviews,model, num_features)
 print ("Creating average feature vecs for test reviews")
 clean_test_reviews=[]
 for review in testdata["review"]:
-	clean_test_reviews.append(review_to_worldlist(review,remove_stopwords=True))
+	clean_test_reviews.append(review_to_wordlist(review,remove_stopwords=True))
 testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
 
 
