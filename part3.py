@@ -1,5 +1,6 @@
-from gensim.models import Word2Vec
-from gensim import models
+# from gensim.models import Word2Vec
+# from gensim import models
+import gensim
 import numpy as np
 
 
@@ -27,9 +28,15 @@ def makeFeatureVec(words, model, num_features):
 	return featureVec
 
 def getAverageFeatures(reviews, model, num_features):
-	counter=0
-	reviewFeatureVecs=np.zeros((len))
+	reviewFeatureVecs=np.zeros((len(reviews),num_features),dtype="float32")
 
+	counter=0
+	for review in reviews:
+		if counter%1000:
+			print ("On review : " + str(counter))
+		reviewFeatureVecs[counter]= makeFeaturevec(revew,model,num_features)
+		counter=counter+1
+	return reviewFeatureVecs
 
 # model=Word2Vec.load('300features_40minwords_10context.bin')
 model=models.KeyedVectors.load_word2vec_format("glove_word2vec.bin")
