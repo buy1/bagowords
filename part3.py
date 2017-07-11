@@ -1,10 +1,12 @@
-# from gensim.models import Word2Vec
-# from gensim import models
-import gensim.models as models
+from gensim.models import Word2Vec
+from gensim import models
+from bs4 import BeautifulSoup
 import numpy as np
 import os
 import pandas as pd
-
+from nltk.corpus import stopwords
+import nltk.data
+import logging
 #Takes in a raw_String and removes html elements and non alphabetical characters
 #returns a list of words
 def review_to_wordlist(review, remove_stopwords=False):
