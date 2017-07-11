@@ -48,7 +48,7 @@ traindata=pd.read_csv(labeledpath, header=0,delimiter="\t", quoting=3)
 testdata=pd.read_csv(testpath,header=0,delimiter="\t",quoting=3)
 # unlabeled_traindata=pd.read_csv(unlabeled_path,header=0,delimiter="\t", quoting=3)
 #open('u.item', encoding = "ISO-8859-1")
-model=models.KeyedVectors.load_word2vec_format("/mnt/home/huangbaiwen/model/glove-word2vec.bin",encoding = "ISO-8859-1")
+model=models.KeyedVectors.load_word2vec_format("/mnt/home/huangbaiwen/model/glove-word2vec.bin")
 num_features=300
 
 print ("Creating average feature vecs for train reviews")
