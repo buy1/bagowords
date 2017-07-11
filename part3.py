@@ -96,10 +96,10 @@ for review in test["review"]:
 	clean_test_reviews.append(review_to_wordlist(review,remove_stopwords=True))
 testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
 # ===================================
-f=h5py.File("test.hdf5","w")
-dset=f.create_dataset("test",data=testDataVecs)
-dset=f.create_dataset("train",data=trainDataVecs)
-f.close()
+# f=h5py.File("test.hdf5","w")
+# dset=f.create_dataset("test",data=testDataVecs)
+# dset=f.create_dataset("train",data=trainDataVecs)
+# f.close()
 #==================================
 # # forest = RandomForestClassifier(n_estimators=100)
 
@@ -111,42 +111,43 @@ f.close()
 # # output=pd.DataFrame(data={"id":test["id"],"sentiment":result})
 # # output.to_csv("Word2Vec_AverageVectors.csv",index=False, quoting=3)
 #================================
-# h5f=h5py.file('test.hdf5','r')
-# testDataVecs=h5f['data'][:]
-# start = time.time() # Start time
+h5f=h5py.file('data.hdf5','r')
+testDataVecs=h5f['test'][:]
+trainDataVecs=h5f['train'][:]
+start = time.time() # Start time
 
-# #syn0: a numpy array that stores a word with all its features in each row
-# word_vectors = model.syn0
-# #sets the number of clusters to be 1/5th the size of words
-# # aka 5 words per cluster instead of just shape[0] which would be 5 words per cluster
-# num_clusters = word_vectors.shape[0] / 5
-# print (num_clusters)
-# #initialize the the trainer object
-# kmeans_clustering = KMeans( n_clusters = num_clusters )
-# # fits the model to the data
-# idx = kmeans_clustering.fit_predict(word_vectors)
+#syn0: a numpy array that stores a word with all its features in each row
+word_vectors = model.syn0
+#sets the number of clusters to be 1/5th the size of words
+# aka 5 words per cluster instead of just shape[0] which would be 5 words per cluster
+num_clusters = word_vectors.shape[0] / 5
+print (num_clusters)
+#initialize the the trainer object
+kmeans_clustering = KMeans( n_clusters = num_clusters )
+# fits the model to the data
+idx = kmeans_clustering.fit_predict(word_vectors)
 
-# # Get the end time and print how long the process took
-# end = time.time()
+# Get the end time and print how long the process took
+end = time.time()
 #+====================================
-# elapsed = end - start
-# print ("Time taken for K Means clustering: ", elapsed, "seconds.")
-# num_clusters=word_vectors.shape[0]/5
+elapsed = end - start
+print ("Time taken for K Means clustering: ", elapsed, "seconds.")
+num_clusters=word_vectors.shape[0]/5
 
-# # Create a Word / Index dictionary, mapping each vocabulary word to
-# # a cluster number                                                              
-# word_centroid_map = dict(zip( model.index2word, idx ))
+# Create a Word / Index dictionary, mapping each vocabulary word to
+# a cluster number                                                              
+word_centroid_map = dict(zip( model.index2word, idx ))
 
-# # For the first 10 clusters
-# for cluster in xrange(0,10):
-#     #
-#     # Print the cluster number  
-#     print ("\nCluster %d" % cluster)
-#     #
-#     # Find all of the words for that cluster number, and print them out
-#     words = []
-#     for i in xrange(0,len(word_centroid_map.values())):
-#         if( word_centroid_map.values()[i] == cluster ):
-#             words.append(word_centroid_map.keys()[i])
-#     print (words)
+# For the first 10 clusters
+for cluster in xrange(0,10):
+    #
+    # Print the cluster number  
+    print ("\nCluster %d" % cluster)
+    #
+    # Find all of the words for that cluster number, and print them out
+    words = []
+    for i in xrange(0,len(word_centroid_map.values())):
+        if( word_centroid_map.values()[i] == cluster ):
+            words.append(word_centroid_map.keys()[i])
+    print (words)
 
