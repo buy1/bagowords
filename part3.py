@@ -72,30 +72,30 @@ def getAvgFeatureVecs(reviews, model, num_features):
 		counter+=1
 	return reviewFeatureVecs
 # ===============
-# model=Word2Vec.load('300features_40minwords_10context.bin')
-labeledpath=os.getcwd()+"/data/labeledTrainData.tsv"
-testpath=os.getcwd()+"/data/testData.tsv"
-# unlabeled_path=os.getcwd()+"data/unlabeledTrainData.tsv"
+# # model=Word2Vec.load('300features_40minwords_10context.bin')
+# labeledpath=os.getcwd()+"/data/labeledTrainData.tsv"
+# testpath=os.getcwd()+"/data/testData.tsv"
+# # unlabeled_path=os.getcwd()+"data/unlabeledTrainData.tsv"
 
-train=pd.read_csv(labeledpath, header=0,delimiter="\t", quoting=3)
-test=pd.read_csv(testpath,header=0,delimiter="\t",quoting=3)
-# unlabeled_traindata=pd.read_csv(unlabeled_path,header=0,delimiter="\t", quoting=3)
-#open('u.item', encoding = "ISO-8859-1")
-model=models.KeyedVectors.load_word2vec_format("/mnt/home/huangbaiwen/model/glove-word2vec.bin",binary=True)
-num_features=300
+# train=pd.read_csv(labeledpath, header=0,delimiter="\t", quoting=3)
+# test=pd.read_csv(testpath,header=0,delimiter="\t",quoting=3)
+# # unlabeled_traindata=pd.read_csv(unlabeled_path,header=0,delimiter="\t", quoting=3)
+# #open('u.item', encoding = "ISO-8859-1")
+# model=models.KeyedVectors.load_word2vec_format("/mnt/home/huangbaiwen/model/glove-word2vec.bin",binary=True)
+# num_features=300
 
-print ("Creating average feature vecs for train reviews")
-clean_train_reviews=[]
-for review in train["review"]:
-	clean_train_reviews.append(review_to_wordlist(review,remove_stopwords=True))
-trainDataVecs= getAvgFeatureVecs(clean_train_reviews,model, num_features)
+# print ("Creating average feature vecs for train reviews")
+# clean_train_reviews=[]
+# for review in train["review"]:
+# 	clean_train_reviews.append(review_to_wordlist(review,remove_stopwords=True))
+# trainDataVecs= getAvgFeatureVecs(clean_train_reviews,model, num_features)
 
-print ("Creating average feature vecs for test reviews")
-clean_test_reviews=[]
-for review in test["review"]:
-	clean_test_reviews.append(review_to_wordlist(review,remove_stopwords=True))
-testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
-# ===================================
+# print ("Creating average feature vecs for test reviews")
+# clean_test_reviews=[]
+# for review in test["review"]:
+# 	clean_test_reviews.append(review_to_wordlist(review,remove_stopwords=True))
+# testDataVecs=getAvgFeatureVecs(clean_test_reviews,model,num_features)
+# # ===================================
 # f=h5py.File("test.hdf5","w")
 # dset=f.create_dataset("test",data=testDataVecs)
 # dset=f.create_dataset("train",data=trainDataVecs)
