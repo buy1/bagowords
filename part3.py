@@ -7,6 +7,7 @@ import pandas as pd
 from nltk.corpus import stopwords
 import nltk.data
 import logging
+import re
 #Takes in a raw_String and removes html elements and non alphabetical characters
 #returns a list of words
 def review_to_wordlist(review, remove_stopwords=False):
