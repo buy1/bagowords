@@ -112,11 +112,11 @@ word_vectors = model.syn0
 #sets the number of clusters to be 1/5th the size of words
 # aka 5 words per cluster instead of just shape[0] which would be 5 words per cluster
 num_clusters = word_vectors.shape[0] / 5
-
+print (num_clusters)
 #initialize the the trainer object
 kmeans_clustering = KMeans( n_clusters = num_clusters )
 # fits the model to the data
-idx = kmeans_clustering.fit_predict( word_vectors )
+idx = kmeans_clustering.fit_predict(word_vectors)
 
 # Get the end time and print how long the process took
 end = time.time()
