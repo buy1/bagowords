@@ -5,6 +5,23 @@ import numpy as np
 import os
 import pandas as pd
 
+#Takes in a raw_String and removes html elements and non alphabetical characters
+#returns a list of words
+def review_to_wordlist(review, remove_stopwords=False):
+	#Function to convert document to a sequence of words and optionally remove stopwords
+
+	#removes html elements and alphabet words
+	review_text=re.sub("[^a-zA-Z]"," ",BeautifulSoup(review,"html.parser").get_text())
+	#puts the words in lowercase and tokenizes it by whitespace
+	words= review_text.lower().split()
+	#optionally if remove_stopwords is true
+	if remove_stopwords:
+		#changes the array into a set
+		stops=set(stopwords.words("english"))
+		#removes the stopwords
+		words=[w for w in words if not w in stops]
+	return (words)
+
 #All the data has variable length so we try averaging the vectors for each review
 #word is the review
 def makeFeatureVec(words, model, num_features):
